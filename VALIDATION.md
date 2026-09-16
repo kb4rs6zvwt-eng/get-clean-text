@@ -8,3 +8,12 @@
 - L’outil de simulation clavier n’a pas déclenché le raccourci global durant le test de bout en bout. Le contenu du presse-papiers précédent a été restauré. Une pression physique sur ⇧⌘K depuis une autre application reste à vérifier ; le test automatisé d’enregistrement et de conflit auprès de macOS passe.
 
 L’app cible macOS 13 ou ultérieur ; aucune validation sur toutes les versions de macOS ni notarisation Developer ID n’a été effectuée.
+
+## Installateur PKG
+
+- `scripts/build-pkg.sh` génère `dist/Texte-brut-1.0.0-Apple-Silicon.pkg` (environ 263 Ko).
+- Paquet extrait avec `pkgutil --expand-full` : signature de l’app vérifiée et exécutable identique à la compilation.
+- Distribution XML valide : ARM64 uniquement, macOS 13 minimum, installation dans `/Applications`, relocalisation désactivée, aucun script d’installation ni redémarrage.
+- Prévalidation macOS avec `installer -showChoicesXML -target /` : paquet sélectionné et installable. Domaine autorisé : `LocalSystem`.
+- Assistant ouvert et contrôlé : introduction française et sélection de destination correctes. Aucune installation système effectuée par l’agent durant cette vérification.
+- L’app incluse est signée ad hoc ; le paquet n’a pas de signature Developer ID Installer ni de notarisation Apple.

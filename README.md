@@ -4,7 +4,7 @@ Une petite application macOS native pour Apple Silicon. **⇧⌘K** remplace le 
 
 ## Utilisation
 
-1. Ouvrir `dist/Texte brut.app`. Pour la conserver, la glisser dans le dossier Applications.
+1. Ouvrir `dist/Texte-brut-1.0.0-Apple-Silicon.pkg`, suivre l’assistant, puis lancer **Texte brut** depuis **Applications**. L’installation peut demander un compte administrateur. Quitter une ancienne instance de l’app avant de la mettre à jour.
 2. Copier du texte depuis une application.
 3. Appuyer sur **Maj + Commande + K**. Une coche apparaît brièvement dans la barre des menus.
 4. Coller normalement avec **⌘V**.
@@ -41,6 +41,16 @@ Mac Apple Silicon, macOS 13 ou ultérieur. Pour développer : outils en ligne de
 open "dist/Texte brut.app"
 ```
 
+Pour générer aussi l’installateur macOS :
+
+```sh
+./scripts/build-pkg.sh
+```
+
+Ce script reconstruit l’app puis génère `dist/Texte-brut-<version>-Apple-Silicon.pkg`, avec un assistant en français. Il installe uniquement `/Applications/Texte brut.app`, sans script d’installation, lancement automatique ni redémarrage. Il exige Apple Silicon et macOS 13 minimum. Il vérifie la signature de l’app extraite du paquet et compare son exécutable à celui de la compilation.
+
+Le `.pkg` local n’est pas signé avec un certificat **Developer ID Installer** et n’est pas notarié. Pour une diffusion publique sans avertissement de sécurité, il faudra signer l’app avec **Developer ID Application**, signer le paquet avec **Developer ID Installer**, puis le faire notarier par Apple. Le dossier `dist/` est ignoré par Git ; joindre le `.pkg` à une release GitHub pour le distribuer.
+
 Le script produit l’app ARM64 et `dist/Texte-brut-Apple-Silicon.zip`. Il utilise une signature locale ad hoc. La signature est vérifiée dans un dossier temporaire avant l’archivage : certains dossiers synchronisés ajoutent ensuite des métadonnées Finder au bundle non archivé. Préférer extraire le ZIP dans Applications pour l’installation. Pour diffuser l’app à d’autres personnes sans avertissement Gatekeeper, prévoir une signature Developer ID et une notarisation Apple.
 
 Les tests utilisent des presse-papiers nommés et isolés : ils ne remplacent pas votre presse-papiers habituel. Ils vérifient le retrait des formats, la conservation du texte, les contenus non textuels, les raccourcis persistants et les conflits d’enregistrement.
@@ -54,5 +64,6 @@ Le test manuel optionnel `swift -module-cache-path .build/ModuleCache Tests/HotK
 - `Sources/PlainText/PreferencesWindow.swift` : interface native et saisie du raccourci.
 - `Sources/PlainText/AppDelegate.swift` : cycle de vie, menu et retour visuel.
 - `scripts/build.sh` : construction du bundle `.app`, icône et archive.
+- `scripts/build-pkg.sh` : construction et vérification de l’installateur `.pkg`.
 
 Références Apple : [NSPasteboard](https://developer.apple.com/documentation/appkit/nspasteboard), [LSUIElement](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html). Le contrat du raccourci est documenté dans `CarbonEvents.h`, fourni par le SDK macOS.
