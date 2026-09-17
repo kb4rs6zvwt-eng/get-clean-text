@@ -53,10 +53,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let settings = NSMenuItem(title: "Réglages…", action: #selector(showPreferences(_:)), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
+        let about = NSMenuItem(title: "À propos de Get Clean Text…", action: #selector(showAbout(_:)), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
         menu.addItem(.separator())
         let quit = NSMenuItem(title: "Quitter Get Clean Text", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
         statusItem.menu = menu
+    }
+
+    @objc private func showAbout(_ sender: Any?) {
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .credits: NSAttributedString(string: "Crédits : Enigami")
+        ])
     }
 
     private func updateIcon(symbol: String = "textformat", message: String? = nil) {
