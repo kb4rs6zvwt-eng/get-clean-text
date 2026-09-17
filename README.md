@@ -45,13 +45,27 @@ Le format de distribution par défaut est le **DMG**. `./scripts/build.sh` produ
 
 La génération configure la fenêtre du disque avec Finder et nécessite une session macOS graphique (autoriser le contrôle de Finder si macOS le demande). Le script vérifie l’intégrité du DMG, le monte en lecture seule, contrôle la signature de l’app et compare son exécutable à la compilation, puis éjecte le volume. L’app cible Apple Silicon et macOS 13 minimum.
 
-L’app utilise actuellement une signature locale ad hoc. Pour une distribution publique, prévoir une signature Developer ID et une notarisation Apple. Le dossier `dist/` est ignoré par Git ; joindre le `.dmg` à une release GitHub pour le distribuer.
+L’app utilise actuellement une signature locale ad hoc. Pour une distribution publique, prévoir une signature Developer ID et une notarisation Apple. Le dossier `dist/` est ignoré par Git ; la publication des releases utilise exclusivement le `.dmg`.
 
 Le bundle `.app` et une archive ZIP sont également générés. L’ancien script `scripts/build-pkg.sh` reste disponible pour un besoin ponctuel de PKG ; il ne constitue plus le mode de distribution recommandé.
 
 Les tests utilisent des presse-papiers nommés et isolés : ils ne remplacent pas votre presse-papiers habituel. Ils vérifient le retrait des formats, la conservation du texte, les contenus non textuels, les raccourcis persistants et les conflits d’enregistrement.
 
 Le test manuel optionnel `swift -module-cache-path .build/ModuleCache Tests/HotKeySmoke.swift` attend une pression physique sur ⇧⌘K pendant 30 secondes, avec l’app lancée. Il remplace temporairement le presse-papiers par un échantillon puis restaure son ancien contenu, conservé uniquement en mémoire. Si le presse-papiers a été modifié par une autre application pendant le test, il ne l’écrase pas.
+
+## Publier une release
+
+1. Augmenter `CFBundleShortVersionString` et `CFBundleVersion` dans `Resources/Info.plist`.
+2. Commiter et pousser les modifications sur GitHub.
+3. Exécuter `./scripts/release.sh` dans une session graphique macOS.
+
+La commande teste l’app, reconstruit son DMG et publie la release `v<version>` comme dernière version. Seul le DMG correspondant à la version du bundle est envoyé : aucun PKG ni ancien DMG n’est sélectionné par un motif générique. Elle utilise l’authentification GitHub déjà configurée dans Git, ou `GH_TOKEN`/`GITHUB_TOKEN`.
+
+Le SHA-256 du fichier envoyé est vérifié avant publication. Ensuite, les anciens PKG sont retirés des releases ; leurs fichiers et anciennes descriptions sont sauvegardés dans `.build/release-backups/`. Les anciennes releases concernées renvoient vers la dernière version. Un DMG déjà publié avec un contenu différent exige un nouveau numéro de version : aucun tag existant n’est déplacé.
+
+Pour fournir des notes personnalisées : `./scripts/release.sh --notes-file chemin/notes.md`. Pour publier un DMG déjà construit et vérifié, sans recompilation : `python3 scripts/publish-release.py`.
+
+La publication reste une commande explicite ; un simple `git push` ne crée pas de release. Elle s’effectue localement, car la création de la présentation du DMG utilise Finder.
 
 ## Structure
 
@@ -63,6 +77,8 @@ Le test manuel optionnel `swift -module-cache-path .build/ModuleCache Tests/HotK
 - `scripts/build-dmg.sh` : mise en page Finder, compression et vérification du DMG.
 - `scripts/make-dmg-background.swift` : dessin du fond et de la flèche.
 - `scripts/style-dmg.applescript` : disposition des icônes et dimensions de la fenêtre.
+- `scripts/release.sh` : tests, construction et publication du DMG.
+- `scripts/publish-release.py` : publication GitHub vérifiée et retrait des anciens PKG.
 - `scripts/build-pkg.sh` : ancien format `.pkg`, conservé à titre optionnel.
 
 Références Apple : [NSPasteboard](https://developer.apple.com/documentation/appkit/nspasteboard), [LSUIElement](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html). Le contrat du raccourci est documenté dans `CarbonEvents.h`, fourni par le SDK macOS.
