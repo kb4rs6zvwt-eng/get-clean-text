@@ -4,7 +4,7 @@ Une petite application macOS native pour Apple Silicon. **⇧⌘K** remplace le 
 
 ## Utilisation
 
-1. Ouvrir `dist/Get-Clean-Text-1.0.2-Apple-Silicon.dmg`, glisser **Get Clean Text** sur **Applications**, puis éjecter le disque et lancer l’app depuis **Applications**. Quitter l’app avant de remplacer une version précédente. Pour migrer depuis **Texte brut**, retirer les anciennes copies de ce nom dans `/Applications` et `~/Applications` ; les préférences sont conservées.
+1. Ouvrir `dist/Get-Clean-Text-1.0.3-Apple-Silicon.dmg`, glisser **Get Clean Text** sur **Applications**, puis éjecter le disque et lancer l’app depuis **Applications**. Quitter l’app avant de remplacer une version précédente. Pour migrer depuis **Texte brut**, retirer les anciennes copies de ce nom dans `/Applications` et `~/Applications` ; les préférences sont conservées.
 2. Copier du texte depuis une application.
 3. Appuyer sur **Maj + Commande + K**. Une coche apparaît brièvement dans la barre des menus.
 4. Coller normalement avec **⌘V**.

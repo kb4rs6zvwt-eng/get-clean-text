@@ -88,6 +88,7 @@ class GitHub:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--notes-file", type=Path, help="Notes Markdown facultatives pour cette version")
+    parser.add_argument("--keep-legacy-assets", action="store_true", help="Conserver les anciennes pièces jointes des releases")
     args = parser.parse_args()
     remote = git("remote", "get-url", "origin")
     if remote.removesuffix(".git") not in {f"https://github.com/{REPOSITORY}", f"git@github.com:{REPOSITORY}"}:
@@ -141,6 +142,13 @@ def main():
     })
     published_asset = next(item for item in release["assets"] if item["name"] == asset.name)
     print(f"DMG publié et SHA-256 vérifié : {published_asset['browser_download_url']}")
+
+    if args.keep_legacy_assets:
+        final = github.request("GET", f"{API}/releases/latest")
+        if final["id"] != release["id"]:
+            raise RuntimeError("La vérification de la dernière release a échoué.")
+        print(f"Dernière release : {final['html_url']}")
+        return
 
     # Only remove the obsolete format once the replacement is public and verified.
     backup = ROOT / ".build/release-backups"
