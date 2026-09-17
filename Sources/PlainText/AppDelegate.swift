@@ -42,7 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         updateIcon()
         let menu = NSMenu()
         menu.delegate = self
-        let title = NSMenuItem(title: "Texte brut", action: nil, keyEquivalent: "")
+        let title = NSMenuItem(title: "Get Clean Text", action: nil, keyEquivalent: "")
         menu.addItem(title)
         statusMenuItem = NSMenuItem(title: "Prêt à nettoyer", action: nil, keyEquivalent: "")
         menu.addItem(statusMenuItem)
@@ -54,17 +54,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         settings.target = self
         menu.addItem(settings)
         menu.addItem(.separator())
-        let quit = NSMenuItem(title: "Quitter Texte brut", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quitter Get Clean Text", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
         statusItem.menu = menu
     }
 
     private func updateIcon(symbol: String = "textformat", message: String? = nil) {
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Texte brut")
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Get Clean Text")
         image?.isTemplate = true
         statusItem.button?.image = image
-        statusItem.button?.toolTip = message ?? "Texte brut · \(shortcut.display)"
-        statusItem.button?.setAccessibilityLabel(message ?? "Texte brut, nettoyer avec \(shortcut.display)")
+        statusItem.button?.toolTip = message ?? "Get Clean Text · \(shortcut.display)"
+        statusItem.button?.setAccessibilityLabel(message ?? "Get Clean Text, nettoyer avec \(shortcut.display)")
     }
 
     private func refreshMenu() {

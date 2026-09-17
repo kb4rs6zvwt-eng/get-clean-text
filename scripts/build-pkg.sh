@@ -8,8 +8,8 @@ PKG_STAGE="$(mktemp -d /private/tmp/texte-brut-pkg.XXXXXX)"
 trap 'rm -rf "$PKG_STAGE"' EXIT
 PKG_ROOT="$PKG_STAGE/root"
 mkdir -p "$PKG_ROOT/Applications"
-ditto -x -k dist/Texte-brut-Apple-Silicon.zip "$PKG_ROOT/Applications"
-PKG_APP="$PKG_ROOT/Applications/Texte brut.app"
+ditto -x -k dist/Get-Clean-Text-Apple-Silicon.zip "$PKG_ROOT/Applications"
+PKG_APP="$PKG_ROOT/Applications/Get Clean Text.app"
 codesign --verify --strict "$PKG_APP"
 APP_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PKG_APP/Contents/Info.plist")"
 APP_IDENTIFIER="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$PKG_APP/Contents/Info.plist")"
@@ -53,7 +53,7 @@ import xml.etree.ElementTree as ET
 path = sys.argv[1]
 tree = ET.parse(path)
 root = tree.getroot()
-ET.SubElement(root, 'title').text = 'Texte brut'
+ET.SubElement(root, 'title').text = 'Get Clean Text'
 ET.SubElement(root, 'welcome', {'file': 'welcome.html', 'mime-type': 'text/html'})
 ET.SubElement(root, 'conclusion', {'file': 'conclusion.html', 'mime-type': 'text/html'})
 ET.SubElement(root, 'domains', {
@@ -65,13 +65,13 @@ options.set('customize', 'never')
 tree.write(path, encoding='utf-8', xml_declaration=True)
 PY
 
-PKG_OUTPUT="$PWD/dist/Texte-brut-$APP_VERSION-Apple-Silicon.pkg"
+PKG_OUTPUT="$PWD/dist/Get-Clean-Text-$APP_VERSION-Apple-Silicon.pkg"
 productbuild --distribution "$PKG_STAGE/Distribution.xml" \
     --resources Resources/Installer --package-path "$PKG_STAGE" "$PKG_OUTPUT"
 
 # Extract and verify the actual delivery payload, not just the source app.
 pkgutil --expand-full "$PKG_OUTPUT" "$PKG_STAGE/verification"
-PKG_VERIFIED_APP="$PKG_STAGE/verification/texte-brut-component.pkg/Payload/Applications/Texte brut.app"
+PKG_VERIFIED_APP="$PKG_STAGE/verification/texte-brut-component.pkg/Payload/Applications/Get Clean Text.app"
 codesign --verify --strict "$PKG_VERIFIED_APP"
 cmp "$PKG_APP/Contents/MacOS/PlainText" "$PKG_VERIFIED_APP/Contents/MacOS/PlainText"
 /usr/bin/xmllint --noout "$PKG_STAGE/verification/Distribution"

@@ -7,7 +7,7 @@ swift build -c release --arch arm64 --disable-sandbox --cache-path "$PWD/.build/
 BIN_DIR="$(swift build -c release --arch arm64 --disable-sandbox --cache-path "$PWD/.build/cache" --show-bin-path)"
 STAGING_DIR="$(mktemp -d /private/tmp/texte-brut-build.XXXXXX)"
 trap 'rm -rf "$STAGING_DIR"' EXIT
-APP="$STAGING_DIR/Texte brut.app"
+APP="$STAGING_DIR/Get Clean Text.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/PlainText" "$APP/Contents/MacOS/PlainText"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
@@ -19,9 +19,14 @@ xattr -dr com.apple.ResourceFork "$APP" 2>/dev/null || true
 codesign --force --sign - "$APP"
 codesign --verify --strict "$APP"
 mkdir -p "$PWD/dist"
-ditto -c -k --norsrc --noextattr --keepParent "$APP" "$PWD/dist/Texte-brut-Apple-Silicon.zip"
-ditto --norsrc --noextattr "$APP" "$PWD/dist/Texte brut.app"
-xattr -d com.apple.FinderInfo "$PWD/dist/Texte brut.app" 2>/dev/null || true
+ditto -c -k --norsrc --noextattr --keepParent "$APP" "$PWD/dist/Get-Clean-Text-Apple-Silicon.zip"
+ditto --norsrc --noextattr "$APP" "$PWD/dist/Get Clean Text.app"
+xattr -d com.apple.FinderInfo "$PWD/dist/Get Clean Text.app" 2>/dev/null || true
 # The archive preserves the verified bundle even if the sync provider later
 # adds FinderInfo to the loose copy in dist.
-printf 'Application créée : %s\n' "$PWD/dist/Texte brut.app"
+printf 'Application créée : %s\n' "$PWD/dist/Get Clean Text.app"
+
+# The disk image is the default distribution: drag the app into Applications.
+APP_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")"
+DMG_OUTPUT="$PWD/dist/Get-Clean-Text-$APP_VERSION-Apple-Silicon.dmg"
+./scripts/build-dmg.sh "$APP" "$DMG_OUTPUT"

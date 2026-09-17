@@ -10,7 +10,8 @@ final class ShortcutRecorder: NSButton {
 
     init() {
         super.init(frame: .zero)
-        bezelStyle = .rounded
+        // A flexible bezel respects the 48-point height and centers the title.
+        bezelStyle = .regularSquare
         font = .monospacedSystemFont(ofSize: 23, weight: .medium)
         target = self
         action = #selector(beginRecording)
@@ -76,7 +77,7 @@ final class PreferencesWindow: NSWindowController, NSWindowDelegate {
     init(shortcut: Shortcut) {
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 490),
             styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-        window.title = "Texte brut"
+        window.title = "Get Clean Text"
         window.isReleasedWhenClosed = false
         super.init(window: window)
         window.delegate = self
@@ -92,7 +93,7 @@ final class PreferencesWindow: NSWindowController, NSWindowDelegate {
         let symbol = NSImageView(image: NSImage(systemSymbolName: "textformat", accessibilityDescription: nil)!)
         symbol.contentTintColor = .controlAccentColor
         symbol.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 36, weight: .medium)
-        let heading = label("Le texte. Tout simplement.", size: 25, weight: .semibold)
+        let heading = label("Get Clean Text", size: 25, weight: .semibold)
         let description = label("Copiez du texte, lancez le raccourci, puis collez.\nLes polices, couleurs et styles disparaissent.", size: 14)
         description.textColor = .secondaryLabelColor
         let shortcutHeading = label("RACCOURCI DE NETTOYAGE", size: 11, weight: .semibold)
