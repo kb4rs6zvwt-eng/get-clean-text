@@ -106,7 +106,8 @@ def main():
     sha = git("rev-parse", "HEAD")
     github = GitHub()
     github.request("GET", f"{API}/commits/{sha}")  # Require the release source to be pushed first.
-    tagged_commit = github.request("GET", f"{API}/commits/{tag}", allow_missing=True)
+    tagged_ref = github.request("GET", f"{API}/git/ref/tags/{tag}", allow_missing=True)
+    tagged_commit = github.request("GET", f"{API}/commits/{tag}") if tagged_ref else None
     if tagged_commit and tagged_commit["sha"] != sha:
         raise RuntimeError(f"{tag} pointe déjà vers un autre commit. Augmenter la version avant publication.")
     notes = args.notes_file.read_text() if args.notes_file else (

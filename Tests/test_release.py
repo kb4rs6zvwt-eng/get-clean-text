@@ -34,7 +34,7 @@ class ReleaseTests(unittest.TestCase):
 
     def request(self, method, url, payload=None, asset=None, allow_missing=False):
         self.calls.append((method, url))
-        if "/commits/v1.0.2" in url:
+        if "/git/ref/tags/v1.0.2" in url or "/commits/v1.0.2" in url:
             return {"sha": self.tag_sha} if self.tag_sha else None
         if "/commits/" in url:
             return {"sha": "head"}
