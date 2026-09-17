@@ -139,7 +139,8 @@ def main():
         "name": f"Get Clean Text {version}", "body": notes, "draft": False,
         "prerelease": False, "make_latest": "true",
     })
-    print(f"DMG publié et SHA-256 vérifié : {existing['browser_download_url']}")
+    published_asset = next(item for item in release["assets"] if item["name"] == asset.name)
+    print(f"DMG publié et SHA-256 vérifié : {published_asset['browser_download_url']}")
 
     # Only remove the obsolete format once the replacement is public and verified.
     backup = ROOT / ".build/release-backups"
